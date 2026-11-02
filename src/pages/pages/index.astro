@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getAllPages,
+  getUniqueCities,
+  getUniqueServices,
+  slugify,
+} from '../../lib/data';
+
+const pages = getAllPages();
+const cities = getUniqueCities();
+const services = getUniqueServices();
+---
+
+<BaseLayout
+  title="All Programmatic Landing Pages | Pageforge"
+  description="Browse every SEO landing page generated from the CSV dataset — filtered by city and service."
+>
+  <section class="section" style="padding-top: 3rem;">
+    <div class="container">
+      <p class="eyebrow">Generated catalog</p>
+      <h1 class="section-title" style="max-width: 18ch;">All programmatic pages</h1>
+      <p class="section-lead">
+        {pages.length} pages compiled from <code>data/pages.csv</code>. Add a row, rebuild, redeploy.
+      </p>
+
+      <div style="margin-top: 2rem; display: grid; gap: 2rem;">
+        <div>
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.85rem;">By city</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+            {
+              cities.map((city) => (
+                <a class="btn btn-secondary" href={`/cities/${slugify(city)}/`}>
+                  {city}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <div>
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.85rem;">By service</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+            {
+              services.map((service) => (
+                <a class="btn btn-secondary" href={`/services/${slugify(service)}/`}>
+                  {service}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="page-grid" style="margin-top: 2.5rem;">
+        {
+          pages.map((page) => (
+            <a class="page-link" href={`/pages/${page.slug}/`}>
+              <div class="meta">
+                {page.city}, {page.state} · {page.service}
+              </div>
+              <h3>{page.headline}</h3>
+              <p>{page.subheadline}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

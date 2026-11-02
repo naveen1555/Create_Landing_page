@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getAllPages,
+  getRelatedPages,
+  type LandingPage,
+} from '../../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+  buildLocalBusinessSchema,
+} from '../../lib/schema';
+
+export function getStaticPaths() {
+  return getAllPages().map((page) => ({
+    params: { slug: page.slug },
+    props: { page },
+  }));
+}
+
+interface Props {
+  page: LandingPage;
+}
+
+const { page } = Astro.props;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const related = getRelatedPages(page);
+const faqs = [
+  {
+    q: `What does a ${page.service.toLowerCase()} in ${page.city} typically deliver?`,
+    a: `A ${page.service.toLowerCase()} in ${page.city} helps local brands capture search demand, convert traffic, and build durable organic visibility. Core deliverables usually include strategy, execution, and reporting tailored to ${page.city}, ${page.state}.`,
+  },
+  {
+    q: `How fast can I launch ${page.service.toLowerCase()} pages for ${page.city}?`,
+    a: `With programmatic templates, you can generate SEO-ready ${page.city} landing pages from a CSV in minutes, then deploy statically to Netlify for free global CDN delivery.`,
+  },
+  {
+    q: `Why use programmatic SEO for ${page.city} ${page.service.toLowerCase()} pages?`,
+    a: `Long-tail and localized queries scale poorly when written by hand. Programmatic pages inject ${page.city}-specific copy, schema markup, and internal links so every variant stays consistent and crawlable.`,
+  },
+];
+
+const jsonLd = [
+  buildLocalBusinessSchema(page, siteUrl),
+  buildBreadcrumbSchema(page, siteUrl),
+  buildFaqSchema(page),
+];
+---
+
+<BaseLayout
+  title={page.meta_title}
+  description={page.meta_description}
+  jsonLd={jsonLd}
+>
+  <article>
+    <section class="landing-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span>/</span>
+          <a href="/pages/">Pages</a>
+          <span>/</span>
+          <span>{page.city}</span>
+        </nav>
+
+        <p class="eyebrow">{page.service} · {page.city}, {page.state}</p>
+        <h1>{page.headline}</h1>
+        <p class="lead">{page.subheadline}</p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={page.cta_url}>{page.cta_label}</a>
+          <a class="btn btn-secondary" href="/pages/">Explore more cities</a>
+        </div>
+
+        <div class="contact-strip">
+          <span>Call: <a href={`tel:${page.phone.replace(/[^\d+]/g, '')}`}>{page.phone}</a></span>
+          <span>Email: <a href={`mailto:${page.email}`}>{page.email}</a></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <h2 style="font-size: clamp(1.6rem, 3vw, 2.1rem); max-width: 18ch;">
+          Why teams in {page.city} choose this {page.service.toLowerCase()}
+        </h2>
+
+        <div class="benefits">
+          <div class="benefit">
+            <div class="benefit-index">01</div>
+            <div>
+              <h3>{page.primary_benefit}</h3>
+              <p>Mapped to how buyers in {page.city} actually search and evaluate vendors.</p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-index">02</div>
+            <div>
+              <h3>{page.secondary_benefit}</h3>
+              <p>Built into every programmatic variant so quality doesn’t drop as you scale.</p>
+            </div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-index">03</div>
+            <div>
+              <h3>{page.tertiary_benefit}</h3>
+              <p>Local relevance for {page.city}, {page.state} without rewriting every page by hand.</p>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="font-size: clamp(1.6rem, 3vw, 2.1rem); margin-top: 2.5rem;">
+          Frequently asked questions
+        </h2>
+        <div class="faq">
+          {
+            faqs.map((item) => (
+              <details>
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))
+          }
+        </div>
+
+        {
+          related.length > 0 && (
+            <div class="related">
+              <h2 style="font-size: clamp(1.6rem, 3vw, 2.1rem); margin-bottom: 1rem;">
+                Related pages
+              </h2>
+              <p class="section-lead" style="margin-bottom: 1.25rem;">
+                Internal links across cities and services help distribute authority and keep crawlers moving.
+              </p>
+              <div class="page-grid">
+                {related.map((item) => (
+                  <a class="page-link" href={`/pages/${item.slug}/`}>
+                    <div class="meta">
+                      {item.city}, {item.state} · {item.service}
+                    </div>
+                    <h3>{item.headline}</h3>
+                    <p>{item.subheadline}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </section>
+  </article>
+</BaseLayout>

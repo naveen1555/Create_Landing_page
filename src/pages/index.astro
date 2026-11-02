@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllPages, getUniqueCities, getUniqueServices } from '../lib/data';
+
+const pages = getAllPages();
+const cities = getUniqueCities();
+const services = getUniqueServices();
+const samplePages = pages.slice(0, 6);
+---
+
+<BaseLayout
+  title="Pageforge — Programmatic SEO & Landing Page Generator"
+  description="Turn a CSV of cities, services, or product variants into hundreds of SEO-optimized landing pages. Static deploy on Netlify for $0/month."
+>
+  <section class="hero">
+    <div class="container hero-content">
+      <p class="hero-brand">Pageforge</p>
+      <p class="eyebrow">Programmatic SEO engine</p>
+      <h1>Hundreds of localized pages. One dataset.</h1>
+      <p>
+        Feed a CSV of cities, services, or variants — Pageforge compiles high-converting,
+        schema-rich landing pages and ships them to Netlify’s global CDN.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/pages/">Browse generated pages</a>
+        <a class="btn btn-secondary" href="/docs/">Read the docs</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="problem">
+    <div class="container">
+      <p class="eyebrow">The problem</p>
+      <h2 class="section-title">Localized SEO doesn’t scale by hand</h2>
+      <p class="section-lead">
+        Ranking for “Best [Service] in [City]” means hundreds of pages. Writing them manually
+        burns months. Pageforge turns structured data into crawlable, conversion-ready pages.
+      </p>
+
+      <div class="grid-3" style="margin-top: 2.5rem;">
+        <article class="feature">
+          <h3>Long-tail demand</h3>
+          <p>City × service matrices create search volume you’d never cover with a content calendar.</p>
+        </article>
+        <article class="feature">
+          <h3>Consistency tax</h3>
+          <p>Manual pages drift in tone, schema, and internal links — hurting both UX and crawlability.</p>
+        </article>
+        <article class="feature">
+          <h3>Deploy friction</h3>
+          <p>Without a static pipeline, every batch of pages becomes another hosting and QA headache.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <p class="eyebrow">How it works</p>
+      <h2 class="section-title">Full-stack architecture, zero monthly cost</h2>
+      <p class="section-lead">
+        Astro compiles your CSV into static HTML. Git push triggers Netlify. No servers, no CMS fees.
+      </p>
+
+      <div class="flow" style="margin-top: 2.25rem;">
+        <article class="flow-step">
+          <h3>Structured data</h3>
+          <p>Maintain cities, services, and copy variants in <code>data/pages.csv</code>.</p>
+        </article>
+        <article class="flow-step">
+          <h3>Template layer</h3>
+          <p>Astro injects location data, FAQ schema, breadcrumbs, and related links.</p>
+        </article>
+        <article class="flow-step">
+          <h3>Static compile</h3>
+          <p>Build-time generation produces one HTML page per row — fast and indexable.</p>
+        </article>
+        <article class="flow-step">
+          <h3>Netlify deploy</h3>
+          <p>Connect GitHub, push updates, and ship on a global CDN for $0/month.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Developer-friendly</p>
+      <h2 class="section-title">CSV in. Pages out.</h2>
+      <p class="section-lead" style="margin-bottom: 1.5rem;">
+        Currently generating <strong>{pages.length}</strong> pages across
+        <strong>{cities.length}</strong> cities and <strong>{services.length}</strong> services.
+      </p>
+
+      <pre class="code-panel"><code><span class="comment"># data/pages.csv</span>
+slug,city,state,service,headline,...
+best-seo-agency-austin,Austin,TX,SEO Agency,Best SEO Agency in Austin,...
+
+<span class="comment"># Build &amp; preview locally</span>
+npm install
+npm run dev
+
+<span class="comment"># Production build (what Netlify runs)</span>
+npm run build</code></pre>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Live examples</p>
+      <h2 class="section-title">Sample programmatic pages</h2>
+      <p class="section-lead" style="margin-bottom: 1.75rem;">
+        Each page includes unique meta tags, LocalBusiness + FAQ schema, and internal links to related city/service variants.
+      </p>
+
+      <div class="page-grid">
+        {
+          samplePages.map((page) => (
+            <a class="page-link" href={`/pages/${page.slug}/`}>
+              <div class="meta">{page.city}, {page.state} · {page.service}</div>
+              <h3>{page.headline}</h3>
+              <p>{page.subheadline}</p>
+            </a>
+          ))
+        }
+      </div>
+
+      <p style="margin-top: 1.75rem;">
+        <a class="btn btn-secondary" href="/pages/">View all {pages.length} pages</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stats-note">
+        <strong>Cost factor: $0/month.</strong>
+        Hosted statically on Netlify with a global CDN. Update the CSV, commit, and redeploy —
+        no servers to babysit.
+      </div>
+    </div>
+  </section>
+</BaseLayout>

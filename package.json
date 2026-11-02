@@ -1,0 +1,19 @@
+{
+  "name": "landing-page-generator",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Programmatic SEO & Landing Page Generator — CSV in, SEO pages out, deploy on Netlify for $0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "generate": "node scripts/generate-from-csv.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.7.10",
+    "csv-parse": "^5.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

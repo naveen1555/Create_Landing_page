@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Docs — Pageforge Programmatic SEO Generator"
+  description="How to add CSV rows, generate landing pages, and deploy Pageforge to Netlify for free."
+>
+  <section class="section" style="padding-top: 3rem;">
+    <div class="container" style="max-width: 760px;">
+      <p class="eyebrow">Documentation</p>
+      <h1 class="section-title" style="max-width: 14ch;">Ship pages from a spreadsheet</h1>
+      <p class="section-lead">
+        Pageforge is an Astro static site generator. Edit CSV → build → Netlify CDN. No runtime database.
+      </p>
+
+      <h2 id="quickstart" style="margin-top: 2.5rem; font-size: 1.6rem;">Quickstart</h2>
+      <pre class="code-panel"><code>npm install
+npm run dev
+<span class="comment"># open http://localhost:4321</span></code></pre>
+
+      <h2 id="data" style="margin-top: 2.5rem; font-size: 1.6rem;">1. Add rows to the dataset</h2>
+      <p>
+        Edit <code>data/pages.csv</code>. Each row becomes one landing page at
+        <code>/pages/&lt;slug&gt;/</code>.
+      </p>
+      <pre class="code-panel"><code>slug,city,state,service,headline,subheadline,...
+best-seo-agency-miami,Miami,FL,SEO Agency,Best SEO Agency in Miami,...</code></pre>
+
+      <h2 id="templates" style="margin-top: 2.5rem; font-size: 1.6rem;">2. Template + AI layer</h2>
+      <p>
+        The page template lives in <code>src/pages/pages/[slug].astro</code>. It injects:
+      </p>
+      <ul>
+        <li>City/service-specific copy from the CSV</li>
+        <li>LocalBusiness, Breadcrumb, and FAQ JSON-LD schema</li>
+        <li>Internal links to related city and service pages</li>
+        <li>Open Graph + canonical meta tags</li>
+      </ul>
+
+      <h2 id="build" style="margin-top: 2.5rem; font-size: 1.6rem;">3. Build statically</h2>
+      <pre class="code-panel"><code>npm run build
+<span class="comment"># output → dist/</span></code></pre>
+
+      <h2 id="deploy" style="margin-top: 2.5rem; font-size: 1.6rem;">4. Deploy on Netlify ($0)</h2>
+      <ol>
+        <li>Push this repo to GitHub.</li>
+        <li>In Netlify: <strong>Add new site → Import an existing project</strong>.</li>
+        <li>Build command: <code>npm run build</code></li>
+        <li>Publish directory: <code>dist</code></li>
+        <li>Deploy — every git push rebuilds and republishes automatically.</li>
+      </ol>
+      <p>
+        <code>netlify.toml</code> is already configured. Netlify’s free tier includes global CDN,
+        HTTPS, and continuous deployment.
+      </p>
+
+      <pre class="code-panel"><code><span class="comment"># Optional: Netlify CLI</span>
+npx netlify login
+npx netlify init
+npx netlify deploy --prod</code></pre>
+
+      <h2 id="automation" style="margin-top: 2.5rem; font-size: 1.6rem;">Automation loop</h2>
+      <p>
+        Update CSV → commit to GitHub → Netlify build hook fires → new pages go live worldwide.
+        No servers, no CMS subscription, no per-page hosting cost.
+      </p>
+
+      <div class="stats-note" style="margin-top: 2rem;">
+        Tip: keep unique value in every row (city proof, local phone, distinct benefits) so
+        programmatic pages stay useful — not thin doorway duplicates.
+      </div>
+    </div>
+  </section>
+</BaseLayout>

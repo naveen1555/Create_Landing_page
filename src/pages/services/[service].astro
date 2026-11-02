@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllPages, getPagesByService, slugify } from '../../lib/data';
+
+export function getStaticPaths() {
+  const services = [...new Set(getAllPages().map((p) => p.service))];
+  return services.map((service) => ({
+    params: { service: slugify(service) },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: string;
+}
+
+const { service } = Astro.props;
+const pages = getPagesByService(service);
+---
+
+<BaseLayout
+  title={`${service} by City | Pageforge`}
+  description={`Programmatic ${service.toLowerCase()} landing pages across multiple cities, generated from CSV.`}
+>
+  <section class="section" style="padding-top: 3rem;">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/pages/">Pages</a>
+        <span>/</span>
+        <span>{service}</span>
+      </nav>
+
+      <p class="eyebrow">Service hub</p>
+      <h1 class="section-title">{service}</h1>
+      <p class="section-lead">
+        Localized variants of {service.toLowerCase()} across {pages.length} markets.
+      </p>
+
+      <div class="page-grid" style="margin-top: 2rem;">
+        {
+          pages.map((page) => (
+            <a class="page-link" href={`/pages/${page.slug}/`}>
+              <div class="meta">
+                {page.city}, {page.state}
+              </div>
+              <h3>{page.headline}</h3>
+              <p>{page.subheadline}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

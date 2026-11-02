@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllPages, getPagesByCity, slugify } from '../../lib/data';
+
+export function getStaticPaths() {
+  const cities = [...new Set(getAllPages().map((p) => p.city))];
+  return cities.map((city) => ({
+    params: { city: slugify(city) },
+    props: { city },
+  }));
+}
+
+interface Props {
+  city: string;
+}
+
+const { city } = Astro.props;
+const pages = getPagesByCity(city);
+const state = pages[0]?.state ?? '';
+---
+
+<BaseLayout
+  title={`${city} Landing Pages | Pageforge`}
+  description={`Programmatic SEO landing pages targeting ${city}${state ? `, ${state}` : ''} across multiple services.`}
+>
+  <section class="section" style="padding-top: 3rem;">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/pages/">Pages</a>
+        <span>/</span>
+        <span>{city}</span>
+      </nav>
+
+      <p class="eyebrow">City hub</p>
+      <h1 class="section-title">{city}{state ? `, ${state}` : ''}</h1>
+      <p class="section-lead">
+        {pages.length} service pages generated for {city}. Each page shares schema, CTAs, and cross-links.
+      </p>
+
+      <div class="page-grid" style="margin-top: 2rem;">
+        {
+          pages.map((page) => (
+            <a class="page-link" href={`/pages/${page.slug}/`}>
+              <div class="meta">{page.service}</div>
+              <h3>{page.headline}</h3>
+              <p>{page.subheadline}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
